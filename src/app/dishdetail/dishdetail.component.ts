@@ -21,7 +21,7 @@ export class DishdetailComponent implements OnInit {
   next: string;
   comment: Comment;
   commentForm: FormGroup;
-
+  errMess: string;
   formErrors = {
     'author': '',
     'comment': ''
@@ -83,8 +83,10 @@ export class DishdetailComponent implements OnInit {
       (dish) => {
         this.dish = dish;
         this.setPrevNext(dish.id);
-      }
-    );
+      },
+      (error) =>
+      this.errMess = <any>error
+     );
   }
 
   goBack(): void {
