@@ -7,6 +7,7 @@ import { switchMap } from 'rxjs/operators';
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
 import { Comment } from '../shared/comment';
+import { error } from 'protractor';
 
 @Component({
   selector: 'app-dishdetail',
@@ -16,6 +17,7 @@ import { Comment } from '../shared/comment';
 export class DishdetailComponent implements OnInit {
   @ViewChild('cform') commentFormDirective;
   dish: Dish;
+  dishCopy: Dish;
   dishIds: string[];
   prev: string;
   next: string;
@@ -82,6 +84,7 @@ export class DishdetailComponent implements OnInit {
     this.route.params.pipe(switchMap((params: Params) => this.dishService.getDish(params['id']))).subscribe(
       (dish) => {
         this.dish = dish;
+        this.dishCopy = dish;
         this.setPrevNext(dish.id);
       },
       (error) =>
@@ -103,8 +106,18 @@ export class DishdetailComponent implements OnInit {
     this.comment = this.commentForm.value;
     var d = new Date();
     this.comment.date = d.toISOString();
-    this.dish.comments.push(this.comment);
-    // console.log(this.comment);
+    this.dishCopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishCopy).subscribe(
+      (dish) => {
+        this.dish = dish;
+        this.dishCopy = dish;
+      }, (error) => {
+        this.dish = null;
+        this.dishCopy = null;
+        this.errMess = <any>error; 
+      }
+    );
+    
     this.commentFormDirective.resetForm({
       author: '',
       comment: '',
