@@ -62,7 +62,7 @@
     <p>{{leader.description}}</p>
   </mat-card-content>
 </mat-card>
-<div [hidden]="leader | leaderErrMess">
+<div [hidden]="leader || leaderErrMess">
   <mat-spinner></mat-spinner>
   <h4>Loading. . . Please Wait!</h4>
 </div>
